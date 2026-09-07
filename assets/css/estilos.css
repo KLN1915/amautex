@@ -1,0 +1,268 @@
+/* ============================================================
+   Amautex · hoja de estilos base
+   Bootstrap 5 aporta la grilla y los componentes; aquí va la
+   identidad visual: color de marca, layout y paneles.
+   ============================================================ */
+
+:root {
+    --marca:        #2563eb;
+    --marca-oscuro: #1e40af;
+    --lateral-bg:   #0f172a;
+    --lateral-txt:  #94a3b8;
+    --fondo:        #f1f5f9;
+    --panel:        #ffffff;
+    --borde:        #e2e8f0;
+    --texto:        #0f172a;
+    --lateral-ancho: 250px;
+}
+
+[data-bs-theme="dark"] {
+    --fondo:  #0b1220;
+    --panel:  #131c2e;
+    --borde:  #1f2b44;
+    --texto:  #e2e8f0;
+}
+
+body {
+    background: var(--fondo);
+    color: var(--texto);
+    font-family: system-ui, "Segoe UI", Roboto, sans-serif;
+}
+
+/* ---------- Layout ---------- */
+.app { display: flex; min-height: 100vh; }
+
+.barra-lateral {
+    width: var(--lateral-ancho);
+    flex: 0 0 var(--lateral-ancho);
+    background: var(--lateral-bg);
+    color: var(--lateral-txt);
+    display: flex;
+    flex-direction: column;
+    position: sticky;
+    top: 0;
+    height: 100vh;
+    transition: margin-left .2s ease;
+}
+.barra-lateral.oculta { margin-left: calc(var(--lateral-ancho) * -1); }
+
+.marca {
+    display: flex; align-items: center; gap: .6rem;
+    padding: 1.15rem 1.25rem;
+    color: #fff; font-weight: 700; font-size: 1.1rem;
+    border-bottom: 1px solid rgba(255,255,255,.08);
+}
+.marca i { color: var(--marca); font-size: 1.3rem; }
+
+.menu { padding: .75rem .6rem; flex: 1; overflow-y: auto; }
+.menu-item {
+    display: flex; align-items: center; gap: .7rem;
+    padding: .6rem .8rem; margin-bottom: .15rem;
+    border-radius: .5rem;
+    color: var(--lateral-txt); text-decoration: none;
+    font-size: .93rem;
+}
+.menu-item:hover { background: rgba(255,255,255,.06); color: #fff; }
+.menu-item.active { background: var(--marca); color: #fff; }
+.menu-item i { font-size: 1.05rem; }
+.pie-lateral { padding: .6rem; border-top: 1px solid rgba(255,255,255,.08); }
+
+.contenido { flex: 1; display: flex; flex-direction: column; min-width: 0; }
+
+.topbar {
+    display: flex; align-items: center; gap: 1rem;
+    padding: .75rem 1.25rem;
+    background: var(--panel);
+    border-bottom: 1px solid var(--borde);
+    position: sticky; top: 0; z-index: 5;
+}
+.titulo-pagina { font-size: 1.05rem; font-weight: 600; margin: 0; flex: 1; }
+.usuario-topbar { display: flex; align-items: center; gap: .6rem; }
+.avatar {
+    width: 34px; height: 34px; border-radius: 50%;
+    background: var(--marca); color: #fff;
+    display: grid; place-items: center; font-weight: 600;
+}
+
+.cuerpo { padding: 1.25rem; flex: 1; }
+.pie { padding: .75rem 1.25rem; color: #94a3b8; font-size: .82rem; border-top: 1px solid var(--borde); }
+
+/* ---------- Componentes ---------- */
+.panel {
+    background: var(--panel);
+    border: 1px solid var(--borde);
+    border-radius: .75rem;
+    overflow: hidden;
+    margin-bottom: 1.25rem;
+}
+.panel-cabecera {
+    display: flex; align-items: center; justify-content: space-between; gap: 1rem;
+    padding: .9rem 1.1rem; border-bottom: 1px solid var(--borde);
+}
+.panel-cabecera h2 { font-size: .98rem; font-weight: 600; margin: 0; }
+.panel-pie {
+    display: flex; align-items: center; justify-content: space-between;
+    padding: .7rem 1.1rem; border-top: 1px solid var(--borde);
+}
+
+.tarjeta-kpi {
+    background: var(--panel);
+    border: 1px solid var(--borde);
+    border-radius: .75rem;
+    padding: 1.1rem;
+    display: flex; align-items: center; gap: 1rem;
+    height: 100%;
+}
+.tarjeta-kpi .icono { font-size: 1.9rem; opacity: .9; }
+.tarjeta-kpi .valor { font-size: 1.6rem; font-weight: 700; line-height: 1.1; }
+.tarjeta-kpi .etiqueta { color: #64748b; font-size: .85rem; }
+
+.table > :not(caption) > * > * { padding: .7rem .9rem; }
+.table thead th { font-size: .78rem; text-transform: uppercase; letter-spacing: .04em; color: #64748b; }
+
+/* ---------- Login ---------- */
+.pantalla-login {
+    min-height: 100vh;
+    display: grid; place-items: center;
+    background: linear-gradient(135deg, var(--marca-oscuro), var(--lateral-bg));
+    padding: 1rem;
+}
+.tarjeta-login {
+    background: #fff; color: var(--texto);
+    width: 100%; max-width: 400px;
+    padding: 2rem;
+    border-radius: 1rem;
+    box-shadow: 0 20px 45px rgba(0,0,0,.25);
+}
+.marca-login { text-align: center; margin-bottom: 1.5rem; }
+.marca-login i { font-size: 2.2rem; color: var(--marca); }
+.marca-login h1 { font-size: 1.45rem; font-weight: 700; margin: .4rem 0 .2rem; }
+.marca-login p { color: #64748b; font-size: .88rem; margin: 0; }
+
+/* ---------- Responsive ---------- */
+@media (max-width: 992px) {
+    .barra-lateral { position: fixed; z-index: 1040; margin-left: calc(var(--lateral-ancho) * -1); }
+    .barra-lateral.oculta { margin-left: 0; }
+}
+
+/* ============================================================
+   Multi-academia: selector, contexto y grupos del menú
+   ============================================================ */
+
+.selector-academia {
+    padding: .8rem 1rem;
+    border-bottom: 1px solid rgba(255,255,255,.08);
+}
+.selector-academia .form-label {
+    color: #64748b;
+    font-size: .72rem;
+    text-transform: uppercase;
+    letter-spacing: .05em;
+    margin-bottom: .3rem;
+}
+.selector-academia .form-select {
+    background: rgba(255,255,255,.06);
+    border-color: rgba(255,255,255,.12);
+    color: #e2e8f0;
+}
+.selector-academia .form-select option { color: #0f172a; }
+
+.etiqueta-academia {
+    display: flex; align-items: center; gap: .5rem;
+    padding: .8rem 1.1rem;
+    color: #cbd5e1; font-size: .9rem; font-weight: 500;
+    border-bottom: 1px solid rgba(255,255,255,.08);
+}
+.etiqueta-academia i { color: var(--marca); }
+
+.menu-grupo {
+    color: #64748b;
+    font-size: .7rem;
+    text-transform: uppercase;
+    letter-spacing: .06em;
+    padding: .8rem .8rem .35rem;
+}
+
+.chip-academia {
+    display: inline-flex; align-items: center; gap: .4rem;
+    background: color-mix(in srgb, var(--marca) 12%, transparent);
+    color: var(--marca);
+    border: 1px solid color-mix(in srgb, var(--marca) 25%, transparent);
+    border-radius: 2rem;
+    padding: .25rem .75rem;
+    font-size: .82rem; font-weight: 500;
+    white-space: nowrap;
+}
+
+.punto-color {
+    display: inline-block;
+    width: 9px; height: 9px; border-radius: 50%;
+    margin-right: .35rem;
+    vertical-align: middle;
+}
+
+.titulo-seccion {
+    font-size: .8rem; font-weight: 600;
+    text-transform: uppercase; letter-spacing: .05em;
+    color: #64748b;
+    padding-bottom: .4rem;
+    border-bottom: 1px solid var(--borde);
+    margin-bottom: .9rem;
+}
+
+.caja-credencial {
+    display: flex; align-items: center; gap: .6rem;
+    background: rgba(255,255,255,.6);
+    border-radius: .4rem;
+    padding: .4rem .6rem;
+}
+.caja-credencial code { font-size: 1rem; font-weight: 600; }
+
+.lista-datos { display: grid; grid-template-columns: auto 1fr; gap: .45rem 1rem; margin: 0; }
+.lista-datos dt { color: #64748b; font-weight: 500; font-size: .87rem; }
+.lista-datos dd { margin: 0; text-align: right; font-size: .9rem; }
+
+/* La barra lateral es oscura también en tema claro: el chip debe leerse bien */
+[data-bs-theme="dark"] .caja-credencial { background: rgba(0,0,0,.25); }
+
+/* Pastillas del resumen por nivel y grado (módulo Alumnos) */
+.pastilla-resumen {
+    display: inline-flex; align-items: center; gap: .45rem;
+    background: var(--fondo);
+    border: 1px solid var(--borde);
+    border-radius: 2rem;
+    padding: .3rem .85rem;
+    font-size: .85rem;
+}
+.pastilla-resumen strong {
+    background: var(--marca); color: #fff;
+    border-radius: 1rem;
+    padding: 0 .5rem;
+    font-size: .8rem;
+}
+
+/* Selector Estatal / Particular / Libre del formulario de alumnos */
+.selector-tipo { display: flex; flex-wrap: wrap; gap: .5rem; }
+.selector-tipo .btn { display: inline-flex; align-items: center; gap: .25rem; }
+
+/* Módulo Precios */
+.fila-precio {
+    display: flex; align-items: center; justify-content: space-between; gap: 1rem;
+    padding: .8rem 0;
+    border-bottom: 1px solid var(--borde);
+}
+.fila-precio:last-child { border-bottom: 0; }
+.fila-precio-nombre { display: flex; align-items: center; gap: .8rem; }
+.fila-precio-nombre i { font-size: 1.35rem; color: var(--marca); }
+.fila-precio-monto { width: 140px; }
+.fila-total td { border-top: 2px solid var(--borde); }
+
+/* ---------- Combobox de colegios (Tom Select) ---------- */
+
+/* El desplegable se monta en <body> para que el modal no lo recorte, y por eso
+   necesita quedar por encima del propio modal (Bootstrap lo pone en 1055). */
+.ts-dropdown { z-index: 1060; }
+
+/* Un colegio de otro tipo se ve, pero no se puede elegir: se muestra apagado
+   junto al motivo, en vez de desaparecer al buscarlo. */
+.ts-dropdown .option[data-selectable="false"] { opacity: .75; cursor: not-allowed; }

@@ -1,0 +1,9 @@
+# Bloquea el acceso directo a carpetas internas: solo index.php y assets/ son públicos.
+RewriteEngine On
+RewriteRule ^(core|config|funciones|vistas|conexion|sql|logs|libreria)/ - [F,L]
+
+<FilesMatch "\.(log|sql|md|json|lock)$">
+    Require all denied
+</FilesMatch>
+
+Options -Indexes
