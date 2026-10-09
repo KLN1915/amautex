@@ -1,19 +1,28 @@
 <?php
 /**
  * Configuración global del sistema.
- * Único archivo que se toca al cambiar de servidor (local / producción).
+ *
+ * Los datos propios de cada servidor (base de datos, entorno) NO se editan aquí:
+ * van en config/config.local.php (copiar de config.local.php.example). Ese
+ * archivo no se sube al repositorio y .htaccess lo bloquea; así este archivo es
+ * idéntico en local y en producción. Sin config.local.php se usan los valores
+ * de abajo (los de un Laragon recién instalado).
  */
+
+if (is_file(__DIR__ . '/config.local.php')) {
+    require __DIR__ . '/config.local.php';
+}
 
 // ---------- Entorno ----------
 define('APP_NOMBRE', 'Amautex');
-define('APP_ENTORNO', 'local');            // local | produccion
+defined('APP_ENTORNO') or define('APP_ENTORNO', 'local');     // local | produccion
 define('APP_DEBUG',   APP_ENTORNO === 'local');
 
 // ---------- Base de datos ----------
-define('DB_HOST', 'localhost');
-define('DB_NAME', 'amautex');
-define('DB_USER', 'root');
-define('DB_PASS', '');
+defined('DB_HOST') or define('DB_HOST', 'localhost');
+defined('DB_NAME') or define('DB_NAME', 'amautex');
+defined('DB_USER') or define('DB_USER', 'root');
+defined('DB_PASS') or define('DB_PASS', '');
 define('DB_CHARSET', 'utf8mb4');
 
 // ---------- Rutas del sistema ----------
@@ -43,3 +52,10 @@ if (APP_DEBUG) {
 ini_set('log_errors', '1');
 ini_set('error_log', RUTA_LOGS . '/php-error.log');
 date_default_timezone_set('America/Lima');
+
+// ---------- Lector de fichas ópticas (API OMR en el VPS) ----------
+// Lo normal es que el superadmin cargue el token en Administración > Lector de
+// fichas (queda cifrado en la base). Esto es solo el valor de respaldo.
+defined('OMR_URL')   or define('OMR_URL',   getenv('OMR_URL')   ?: 'https://omr.82-25-75-182.sslip.io');
+defined('OMR_TOKEN') or define('OMR_TOKEN', getenv('OMR_TOKEN') ?: '');
+defined('OMR_PLANTILLA') or define('OMR_PLANTILLA', 'concurso2026');   // hoja por defecto

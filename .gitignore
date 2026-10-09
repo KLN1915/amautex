@@ -3,3 +3,4 @@
 /uploads/*
 !/uploads/.gitkeep
 /config/config.local.php
+/config/clave_app.php

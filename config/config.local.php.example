@@ -1,0 +1,21 @@
+<?php
+/**
+ * Datos propios de ESTE servidor. Copia este archivo como config.local.php y
+ * pon tus valores. config.local.php NO se sube al repositorio (.gitignore) y la
+ * web no puede leerlo (.htaccess).
+ */
+
+// ---------- Producción ----------
+define('APP_ENTORNO', 'produccion');      // oculta los errores en pantalla
+
+define('DB_HOST', 'localhost');
+define('DB_NAME', 'amautex');
+define('DB_USER', 'usuario_de_la_base');
+define('DB_PASS', 'contraseña_de_la_base');
+
+// ---------- Lector de fichas (opcional) ----------
+// Lo recomendado es cargar el token desde el sistema: Administración > Lector de
+// fichas (entrando como superadmin). Solo si prefieres el archivo:
+// define('OMR_TOKEN', 'omr_...');
+// define('OMR_URL', 'https://omr.82-25-75-182.sslip.io');
+// define('OMR_CA', '/ruta/cacert.pem');   // solo si PHP no encuentra los certificados

@@ -103,7 +103,7 @@ JSON {ok, mensaje, datos} ──► assets/js pinta la pantalla
 
 1. Importar `sql/01_esquema.sql` y `sql/02_datos_iniciales.sql`.
    *(Si ya habías importado versiones anteriores, ejecutar en su lugar
-   `sql/03_` … `sql/06_` en orden.)*
+   `sql/03_` … `sql/08_` en orden.)*
 2. Ajustar `config/config.php` (DB_NAME, DB_USER, DB_PASS, APP_ENTORNO).
 3. Ingresar y cambiar ambas contraseñas:
 
@@ -180,6 +180,69 @@ academia y el `superadmin` (parado en esa academia).
 - Al costado, cuántos alumnos activos hay de cada tipo y **cuánto suman**, para
   ver el efecto de un cambio de precio antes de aplicarlo.
 - Cada cambio queda registrado en la bitácora (valores anterior y nuevo).
+
+## Módulo Exámenes (fichas ópticas)
+
+Menú **Exámenes**. Flujo:
+
+1. **Nuevo examen**: nombre, nivel y grado, fecha y la hoja de respuestas (plantilla del
+   lector, que define cuántas preguntas y alternativas tiene).
+2. **Respuestas**: se escanea una hoja marcada (propone las 60 respuestas) o en blanco (las
+   lista vacías) y se confirma o corrige cada una. «–» anula una pregunta.
+3. **Escanear**: código del alumno → foto de su ficha → revisar buenas / malas / en blanco /
+   puntaje → **fecha y hora de entrega** (fecha de hoy por defecto, la hora se escribe) →
+   **Guardar**. Una ficha por alumno y examen (volver a guardar la reemplaza).
+4. **Resultados**: ranking por puntaje (a igual puntaje, primero quien entregó antes), la
+   ficha corregida de cada alumno y **Exportar a Excel**.
+
+- **Puntaje por academia** (panel en Exámenes, lo edita el admin): puntos por correcta,
+  incorrecta (la doble marca cuenta como incorrecta) y en blanco. Se calcula al vuelo:
+  cambiarlo actualiza todos los resultados.
+- Se guarda un carácter por pregunta (`letra`, `_` en blanco, `*` doble marca): si se corrige
+  la clave, las fichas ya escaneadas **se recalculan solas**.
+- Lo que se guarda es lo que leyó el **servidor**: el escaneo queda en la sesión y
+  «Guardar» solo envía su id, así nadie altera el conteo desde el navegador.
+- Las fichas corregidas van a `uploads/examenes/<academia>/<examen>/` (bloqueado por
+  `.htaccess`) y solo se ven desde el sistema, dentro de la propia academia.
+- Tablas: `examenes`, `examen_resultados` (`sql/08_examenes.sql`).
+- Permisos: admin y operador crean, configuran y escanean; `consulta` solo ve resultados;
+  borrar un examen y cambiar el puntaje es del admin.
+
+## Módulo Escanear fichas
+
+Opción **Escanear fichas** del menú (admin, operador y superadmin parado en una academia).
+Lee fichas ópticas con el lector OMR que corre en el VPS:
+
+```
+navegador (cámara o foto) ──► Amautex (PHP) ──HTTPS + token──► API OMR (VPS) ──► respuestas y nota
+```
+
+- **Cámara en vivo** dentro de la página (necesita HTTPS) o **Tomar o subir foto**, que en
+  el celular abre la cámara directamente aunque el sistema esté en HTTP.
+- La foto se reduce en el navegador (máx. 2200 px) antes de subirla.
+- **Clave** opcional: con ella se calcula la nota. «Usar como clave» toma las respuestas de
+  la ficha del profesor. La clave y la hoja elegida se recuerdan en el navegador.
+- Resultado: nota, correctas / incorrectas / en blanco / doble marca, la cuadrícula de
+  respuestas, las preguntas para **revisar a mano** y la ficha corregida.
+- Cada lectura queda en la bitácora.
+
+### Token del lector: Administración › Lector de fichas (solo superadmin)
+
+Una sola conexión para **todas las academias**. El superadmin carga ahí la URL de la API,
+el token y la hoja por defecto; **Probar conexión** lo verifica y solo se guarda si funciona.
+
+- Tabla `configuracion` (`sql/07_configuracion.sql`): ajustes del sistema clave/valor,
+  manejados con `core/Ajustes.php`.
+- El token se guarda **cifrado** (libsodium). La llave está en `config/clave_app.php`, que
+  se crea sola la primera vez, no se sube al repositorio y `.htaccess` la bloquea. Si se
+  pierde, basta con volver a ingresar el token.
+- El token **nunca vuelve al navegador** (solo sus últimos 4 caracteres) y los cambios
+  quedan en la bitácora.
+- Compatibilidad: si no hay token guardado en el sistema, se usa `OMR_TOKEN` de
+  `config/config.local.php`.
+
+Archivos: `funciones/escanear/` (controlador + cliente de la API), `vistas/modulos/escanear.php`,
+`assets/js/escanear.js`.
 
 ## Iconos
 

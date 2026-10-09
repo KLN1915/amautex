@@ -29,6 +29,9 @@ CREATE TABLE IF NOT EXISTS `academias` (
     `tarifa_estatal`    DECIMAL(8,2) NOT NULL DEFAULT 12.00 COMMENT 'cuota del alumno de colegio estatal',
     `tarifa_particular` DECIMAL(8,2) NOT NULL DEFAULT 14.00 COMMENT 'cuota del alumno de colegio particular',
     `tarifa_libre`      DECIMAL(8,2) NOT NULL DEFAULT 14.00 COMMENT 'cuota del alumno libre',
+    `puntaje_correcta`   DECIMAL(6,2) NOT NULL DEFAULT 10.00 COMMENT 'puntos por respuesta correcta',
+    `puntaje_incorrecta` DECIMAL(6,2) NOT NULL DEFAULT -2.00 COMMENT 'puntos por incorrecta (o doble marca)',
+    `puntaje_blanco`     DECIMAL(6,2) NOT NULL DEFAULT 0.00 COMMENT 'puntos por pregunta en blanco',
     `limite_usuarios` SMALLINT UNSIGNED NOT NULL DEFAULT 10,
     `limite_alumnos`  INT UNSIGNED NOT NULL DEFAULT 200,
     `inicio_plan`     DATE DEFAULT NULL,
@@ -133,4 +136,75 @@ CREATE TABLE IF NOT EXISTS `bitacora` (
     KEY `idx_bit_academia` (`academia_id`),
     KEY `idx_bit_usuario` (`usuario_id`),
     KEY `idx_bit_fecha` (`creado_en`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+-- ------------------------------------------------------------
+--  Ajustes del sistema (solo superadmin). Ver 07_configuracion.sql
+-- ------------------------------------------------------------
+CREATE TABLE IF NOT EXISTS `configuracion` (
+    `clave`           VARCHAR(60)  NOT NULL,
+    `valor`           TEXT         NULL,
+    `cifrado`         TINYINT(1)   NOT NULL DEFAULT 0 COMMENT '1 = valor cifrado con la llave de la app',
+    `actualizado_por` INT UNSIGNED NULL,
+    `actualizado_en`  DATETIME     NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    PRIMARY KEY (`clave`),
+    CONSTRAINT `fk_config_usuario` FOREIGN KEY (`actualizado_por`)
+        REFERENCES `usuarios` (`id`) ON DELETE SET NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci
+  COMMENT='Ajustes del sistema (solo superadmin)';
+
+-- ------------------------------------------------------------
+--  Exámenes con fichas ópticas. Ver 08_examenes.sql
+-- ------------------------------------------------------------
+CREATE TABLE IF NOT EXISTS `examenes` (
+    `id`             INT UNSIGNED NOT NULL AUTO_INCREMENT,
+    `academia_id`    INT UNSIGNED NOT NULL,
+    `nombre`         VARCHAR(120) NOT NULL,
+    `nivel`          ENUM('inicial','primaria','secundaria','otro') NOT NULL,
+    `grado`          TINYINT UNSIGNED DEFAULT NULL COMMENT 'NULL = todos los grados del nivel',
+    `fecha`          DATE         DEFAULT NULL,
+    `plantilla`      VARCHAR(40)  NOT NULL COMMENT 'hoja registrada en el lector OMR',
+    `preguntas`      SMALLINT UNSIGNED NOT NULL,
+    `opciones`       TINYINT UNSIGNED NOT NULL DEFAULT 5,
+    `clave`          VARCHAR(300) DEFAULT NULL COMMENT 'una letra por pregunta; "-" = anulada; NULL = sin configurar',
+    `creado_por`     INT UNSIGNED DEFAULT NULL,
+    `creado_en`      DATETIME     NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    `actualizado_en` DATETIME     NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    PRIMARY KEY (`id`),
+    KEY `idx_examen_academia` (`academia_id`, `nivel`, `grado`),
+    CONSTRAINT `fk_examen_academia` FOREIGN KEY (`academia_id`)
+        REFERENCES `academias` (`id`) ON DELETE CASCADE,
+    CONSTRAINT `fk_examen_usuario` FOREIGN KEY (`creado_por`)
+        REFERENCES `usuarios` (`id`) ON DELETE SET NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+CREATE TABLE IF NOT EXISTS `examen_resultados` (
+    `id`             INT UNSIGNED NOT NULL AUTO_INCREMENT,
+    `academia_id`    INT UNSIGNED NOT NULL,
+    `examen_id`      INT UNSIGNED NOT NULL,
+    `alumno_id`      INT UNSIGNED NOT NULL,
+    `respuestas`     VARCHAR(300) NOT NULL COMMENT 'letra | _ en blanco | * doble marca',
+    `revisar`        VARCHAR(600) DEFAULT NULL COMMENT 'preguntas con marca dudosa, separadas por coma',
+    `correctas`      SMALLINT UNSIGNED NOT NULL DEFAULT 0,
+    `incorrectas`    SMALLINT UNSIGNED NOT NULL DEFAULT 0 COMMENT 'incluye las dobles marcas',
+    `blancos`        SMALLINT UNSIGNED NOT NULL DEFAULT 0,
+    `multiples`      SMALLINT UNSIGNED NOT NULL DEFAULT 0,
+    `total`          SMALLINT UNSIGNED NOT NULL DEFAULT 0 COMMENT 'preguntas que cuentan (sin las anuladas)',
+    `imagen`         VARCHAR(200) DEFAULT NULL COMMENT 'ruta relativa en uploads/ de la ficha corregida',
+    `entregado_en`   DATETIME     DEFAULT NULL COMMENT 'cuándo entregó el examen (hora final); desempata el ranking',
+    `escaneado_por`  INT UNSIGNED DEFAULT NULL,
+    `creado_en`      DATETIME     NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    `actualizado_en` DATETIME     NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    PRIMARY KEY (`id`),
+    UNIQUE KEY `uq_resultado_alumno` (`examen_id`, `alumno_id`) COMMENT 'una ficha por alumno y examen',
+    KEY `idx_resultado_academia` (`academia_id`),
+    KEY `idx_resultado_alumno` (`alumno_id`),
+    CONSTRAINT `fk_resultado_academia` FOREIGN KEY (`academia_id`)
+        REFERENCES `academias` (`id`) ON DELETE CASCADE,
+    CONSTRAINT `fk_resultado_examen` FOREIGN KEY (`examen_id`)
+        REFERENCES `examenes` (`id`) ON DELETE CASCADE,
+    CONSTRAINT `fk_resultado_alumno` FOREIGN KEY (`alumno_id`)
+        REFERENCES `alumnos` (`id`) ON DELETE CASCADE,
+    CONSTRAINT `fk_resultado_usuario` FOREIGN KEY (`escaneado_por`)
+        REFERENCES `usuarios` (`id`) ON DELETE SET NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;

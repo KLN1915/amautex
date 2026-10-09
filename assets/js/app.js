@@ -63,11 +63,20 @@ function aviso(mensaje, tipo = 'success') {
     setTimeout(() => el.remove(), 4000);
 }
 
-/** Escape de texto para inyectar en innerHTML. */
+/** Escape de texto para inyectar en innerHTML, también DENTRO de atributos
+ *  (data-nombre="..."): por eso escapa las comillas. Antes se usaba
+ *  textContent->innerHTML, que deja pasar " y permitía inyectar atributos. */
 function escapar(t) {
-    const d = document.createElement('div');
-    d.textContent = t ?? '';
-    return d.innerHTML;
+    return String(t ?? '').replace(/[&<>"']/g, (c) => (
+        { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]
+    ));
+}
+
+/** Fecha de hoy en la zona del equipo (YYYY-MM-DD). toISOString() daría la de UTC:
+ *  en Lima, después de las 7 p. m., ya sería «mañana». */
+function hoyLocal() {
+    const d = new Date();
+    return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
 }
 
 /** Confirmación simple antes de acciones destructivas. */

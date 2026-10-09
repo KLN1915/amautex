@@ -266,3 +266,83 @@ body {
 /* Un colegio de otro tipo se ve, pero no se puede elegir: se muestra apagado
    junto al motivo, en vez de desaparecer al buscarlo. */
 .ts-dropdown .option[data-selectable="false"] { opacity: .75; cursor: not-allowed; }
+
+/* ---------- Escanear fichas ópticas ---------- */
+.escaner-visor {
+    position: relative; border-radius: .6rem; overflow: hidden; background: #000;
+    aspect-ratio: 3 / 4; max-height: 70vh; margin: 0 auto;
+}
+.escaner-visor video { width: 100%; height: 100%; object-fit: cover; display: block; }
+/* Marco guía: la ficha debe quedar completa dentro */
+.escaner-guia {
+    position: absolute; inset: 6% 8%; border: 3px dashed rgba(255, 255, 255, .85);
+    border-radius: .5rem; box-shadow: 0 0 0 100vmax rgba(0, 0, 0, .35);
+    display: flex; align-items: flex-end; justify-content: center; pointer-events: none;
+}
+.escaner-guia span {
+    color: #fff; font-size: .8rem; background: rgba(0, 0, 0, .55);
+    padding: .2rem .6rem; border-radius: 1rem; margin-bottom: .6rem;
+}
+.escaner-previa, .escaner-corregida {
+    display: block; max-width: 100%; max-height: 60vh; margin: 0 auto;
+    border-radius: .5rem; border: 1px solid var(--borde);
+}
+.escaner-dato {
+    border: 1px solid var(--borde); border-left-width: 4px; border-radius: .5rem;
+    padding: .5rem .7rem; background: var(--panel);
+}
+.escaner-dato-valor { font-size: 1.35rem; font-weight: 700; line-height: 1.1; }
+.escaner-dato-titulo { font-size: .78rem; color: #64748b; }
+
+.escaner-respuestas {
+    display: grid; grid-template-columns: repeat(auto-fill, minmax(64px, 1fr)); gap: .35rem;
+}
+.escaner-celda {
+    display: flex; align-items: baseline; gap: .3rem; padding: .3rem .45rem;
+    border: 1px solid var(--borde); border-radius: .4rem; font-variant-numeric: tabular-nums;
+}
+.escaner-num { font-size: .72rem; color: #64748b; min-width: 1.4rem; }
+.escaner-letra { font-weight: 700; }
+.escaner-clave { font-size: .72rem; color: #15803d; margin-left: auto; }
+.escaner-celda.correcta   { background: rgba(22, 163, 74, .12);  border-color: rgba(22, 163, 74, .5); }
+.escaner-celda.incorrecta { background: rgba(220, 38, 38, .10);  border-color: rgba(220, 38, 38, .5); }
+.escaner-celda.blanco     { background: rgba(100, 116, 139, .10); }
+.escaner-celda.multiple   { background: rgba(234, 88, 12, .12);  border-color: rgba(234, 88, 12, .55); }
+.escaner-celda.revisar    { outline: 2px dashed #d97706; outline-offset: 1px; }
+
+.escaner-muestra {
+    display: inline-block; width: .8rem; height: .8rem; border-radius: .2rem;
+    vertical-align: -1px; margin-right: .3rem; border: 1px solid var(--borde);
+}
+.escaner-muestra.correcta   { background: rgba(22, 163, 74, .35); }
+.escaner-muestra.incorrecta { background: rgba(220, 38, 38, .30); }
+.escaner-muestra.blanco     { background: rgba(100, 116, 139, .25); }
+.escaner-muestra.multiple   { background: rgba(234, 88, 12, .35); }
+.escaner-muestra.revisar    { outline: 2px dashed #d97706; background: transparent; }
+
+/* ---------- Exámenes ---------- */
+.paso {
+    display: inline-flex; align-items: center; justify-content: center;
+    width: 1.5rem; height: 1.5rem; border-radius: 50%; margin-right: .5rem;
+    background: var(--marca); color: #fff; font-size: .8rem; font-weight: 700;
+}
+.tarjeta-alumno {
+    border: 1px solid var(--borde); border-left: 4px solid var(--marca);
+    border-radius: .5rem; padding: .6rem .8rem;
+}
+/* clave: una fila por pregunta con sus alternativas */
+.clave-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(255px, 1fr)); gap: .3rem .9rem; }
+.clave-fila {
+    display: flex; align-items: center; gap: .2rem; padding: .15rem .3rem;
+    border-radius: .4rem; border: 1px solid transparent;
+}
+.clave-fila .btn { --bs-btn-padding-x: .45rem; --bs-btn-padding-y: .1rem; min-width: 1.9rem; }
+.clave-num { width: 2.1rem; text-align: right; margin-right: .25rem; font-size: .8rem; color: #64748b; font-variant-numeric: tabular-nums; }
+.clave-fila.pendiente { background: rgba(217, 119, 6, .10); border-color: rgba(217, 119, 6, .55); }
+.clave-muestra {
+    display: inline-block; width: .8rem; height: .8rem; border-radius: .2rem;
+    vertical-align: -1px; margin: 0 .3rem 0 .6rem;
+}
+.clave-muestra.pendiente { background: rgba(217, 119, 6, .25); border: 1px solid rgba(217, 119, 6, .7); }
+.escaner-celda.anulada { opacity: .45; text-decoration: line-through; }
+label.btn.disabled { pointer-events: none; opacity: .55; }

@@ -12,7 +12,7 @@ $iconos = [
     <div class="col-lg-7">
         <form class="panel h-100" id="formPrecios">
             <div class="panel-cabecera">
-                <h2><i class="bi bi-cash-coin me-2"></i>Montos de inscripción</h2>
+                <h2><i class="bi bi-cash-coin me-2"></i>Cuotas que cobra la academia</h2>
             </div>
 
             <div class="p-3">

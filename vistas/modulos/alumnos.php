@@ -14,7 +14,7 @@
     <div class="panel-cabecera">
         <h2>
             Alumnos
-            <small class="text-secondary ms-2" id="cupoAlumnos"><?= (int) $cupo['usados'] ?> / <?= (int) $cupo['limite'] ?></small>
+            <small class="text-secondary ms-2" id="cupoAlumnos"><?= (int) $cupo['usados'] ?> / <?= (int) $cupo['limite'] ?> del plan</small>
         </h2>
         <div class="d-flex gap-2 flex-wrap">
             <select id="filtroTipo" class="form-select form-select-sm" style="width:150px">
@@ -96,7 +96,7 @@
     <div class="col-lg-5">
         <div class="panel h-100">
             <div class="panel-cabecera">
-                <h2><i class="bi bi-cash-coin me-2"></i>Montos de inscripción</h2>
+                <h2><i class="bi bi-cash-coin me-2"></i>Cuotas de la academia</h2>
                 <a class="btn btn-sm btn-light" href="<?= modulo('precios') ?>">
                     <i class="bi bi-sliders me-1"></i>Configurar
                 </a>

@@ -40,6 +40,12 @@ return [
         'menu'        => ['titulo' => 'Academias', 'icono' => 'bi-building'],
         'grupo'       => 'sistema',
     ],
+    'lector' => [
+        'controlador' => 'lector/lector.php',
+        'roles'       => ['superadmin'],
+        'menu'        => ['titulo' => 'Lector de fichas', 'icono' => 'bi-key'],
+        'grupo'       => 'sistema',
+    ],
 
     // ---------- Operación de la academia ----------
     'alumnos' => [
@@ -48,6 +54,18 @@ return [
         'menu'        => ['titulo' => 'Alumnos', 'icono' => 'bi-mortarboard'],
         'grupo'       => 'academia',
     ],
+    'examenes' => [
+        'controlador' => 'examenes/examenes.php',
+        'roles'       => ['superadmin', 'admin', 'operador', 'consulta'],
+        'menu'        => ['titulo' => 'Exámenes', 'icono' => 'bi-ui-checks-grid'],
+        'grupo'       => 'academia',
+    ],
+    // 'escanear' => [
+    //     'controlador' => 'escanear/escanear.php',
+    //     'roles'       => ['superadmin', 'admin', 'operador'],
+    //     'menu'        => ['titulo' => 'Escanear fichas', 'icono' => 'bi-camera'],
+    //     'grupo'       => 'academia',
+    // ],
     'precios' => [
         'controlador' => 'precios/precios.php',
         'roles'       => ['superadmin', 'admin'],
